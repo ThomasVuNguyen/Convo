@@ -11,12 +11,33 @@ class chatPage extends StatefulWidget {
 }
 
 class _chatPageState extends State<chatPage> {
-
-  List<types.Message> _messages = [];
   final _user = const types.User(
-    id: '82091008-a484-4a89-ae75-a22bf8d6f3ac',
+    id: 'currentUser',
+    role: types.Role.user,
   );
-
+  final _comfyHelper = const types.User(
+      id: 'comfyHelper',
+    role: types.Role.admin,
+  );
+  List<types.Message> _messages = [];
+  @override
+  void initState() {
+    final textMessage1 = types.TextMessage(
+      author: _comfyHelper,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: const Uuid().v4(),
+      text: 'Hi beautiful',
+    );
+    _addMessage(textMessage1);
+    final textMessage2 = types.TextMessage(
+      author: _user,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: const Uuid().v4(),
+      text: 'Thank you',
+    );
+    _addMessage(textMessage2);
+    super.initState();
+  }
   void _handleSendPressed(types.PartialText message) {
     final textMessage = types.TextMessage(
       author: _user,
