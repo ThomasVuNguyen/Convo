@@ -20,7 +20,10 @@ class MyApp extends StatelessWidget {
       ),
       home: Directionality(
         textDirection: TextDirection.ltr,
-        child: chatPage(),
+        child: chatPage(
+          questions: {'name': ['what is your name?'], 'dob': ['how old are you?', 'in mm/dd/yyyy format']},
+          answers: {},
+        ),
       ),
     );
   }
