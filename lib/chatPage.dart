@@ -1,13 +1,16 @@
 import 'dart:io';
 
+import 'package:convo/confirmation_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:uuid/uuid.dart';
 
 class chatPage extends StatefulWidget {
-  const chatPage({super.key, required this.questions, required this.answers});
-  final Map<String, List<String>> questions; final Map<String, String> answers;
+  const chatPage({super.key, required this.questions, required this.answers, required this.title});
+  final Map<String, List<String>> questions; final Map<String, String> answers; final String title;
+
 
   @override
   State<chatPage> createState() => _chatPageState();
@@ -23,6 +26,7 @@ class _chatPageState extends State<chatPage> {
   final _comfyHelper = const types.User(
       id: 'comfyHelper',
     role: types.Role.admin,
+    imageUrl: 'https://comfystudio.tech/chilling-in-the-park.jpg'
   );
   List<types.Message> _messages = [];
 
@@ -52,11 +56,20 @@ class _chatPageState extends State<chatPage> {
       //log response
       userAnswer[title] = _messages.first.toJson()['text'];
       print(userAnswer[title]);
-      //ask the next questions
+
+      // Send confirmation message
+      //_sendAdminMessage("$title is ${userAnswer[title]}, confirmed");
+
+      //ask the next questions (continue loop)
     };
-    print(userAnswer.toString());
+    if (kDebugMode) {
+      print(userAnswer.toString());
+    }
+    _moveToNextPage();
   }
-  
+  void _moveToNextPage(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => confirmationPage(name: userAnswer['name']!, dob: userAnswer['dob']!)));
+  }
   void _sendAdminMessage(String msg){
     final textMessage = types.TextMessage(
       author: _comfyHelper,
@@ -95,10 +108,28 @@ class _chatPageState extends State<chatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title, style: Theme.of(context).textTheme.titleLarge),
+        centerTitle: true,
+
+      ),
       body: Chat(
         messages: _messages,
         onSendPressed: _handleSendPressed,
         user: _user,
+        showUserAvatars: true,
+        theme: DefaultChatTheme(
+          primaryColor: Theme.of(context).colorScheme.primary,
+          secondaryColor:
+          //Theme.of(context).colorScheme.secondary,
+          Theme.of(context).colorScheme.onPrimary,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          inputTextStyle: Theme.of(context).textTheme.bodyMedium!,
+          inputTextColor: Theme.of(context).colorScheme.surface,
+          receivedMessageBodyTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+            sentMessageBodyTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.surface),
+          inputBackgroundColor: Theme.of(context).colorScheme.primary
+        )
       ),
     );
   }

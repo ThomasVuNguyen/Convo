@@ -1,3 +1,6 @@
+import 'package:convo/confirmation_page.dart';
+import 'package:convo/themes/color_scheme.dart';
+import 'package:convo/themes/typography.dart';
 import 'package:flutter/material.dart';
 
 import 'chatPage.dart';
@@ -15,14 +18,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: lightColorScheme,
+        textTheme: ComfyTextTheme,
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: darkColorScheme,
+        //darkColorScheme,
+        textTheme: ComfyTextTheme,
+      ),
+      debugShowCheckedModeBanner: false,
       home: Directionality(
         textDirection: TextDirection.ltr,
         child: chatPage(
           questions: {'name': ['what is your name?'], 'dob': ['how old are you?', 'in mm/dd/yyyy format']},
           answers: {},
+          title: 'Convo, a chat app',
         ),
       ),
     );
